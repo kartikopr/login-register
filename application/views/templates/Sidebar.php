@@ -1,6 +1,19 @@
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
+	<?php
+	$role_id = $this->session->userdata('user_role_id');
+
+	$query_menu = "SELECT um.menu, um.id_menu
+				FROM user_menu um JOIN user_access_menu uam
+				ON um.id_menu = uam.id_menu
+				WHERE uam.role_id = '$role_id' 
+				";
+
+	$menu = $this->db->query($query_menu)->result_array();
+
+
+	?>
 	<!-- Sidebar - Brand -->
 	<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
 		<div class="sidebar-brand-icon">
@@ -11,32 +24,32 @@
 
 	<!-- Divider -->
 	<hr class="sidebar-divider">
+	<?php foreach ($menu as $m) : ?>
+		<!-- Nav Item - Dashboard -->
+		<div class="sidebar-heading">
+			<?= $m['menu']; ?>
+		</div>
 
-	<!-- Nav Item - Dashboard -->
-	<div class="sidebar-heading">
-		Admin
-	</div>
-	<li class="nav-item">
-		<a class="nav-link" href="index.html">
-			<i class="fas fa-fw fa-tachometer-alt"></i>
-			<span>Dashboard</span></a>
-	</li>
+		<?php
+			$menu_id = $m['id_menu'];
+			$query_sub_menu = "SELECT * FROM user_sub_menu usm
+								where usm.id_menu = $menu_id AND usm.is_active = 1 ";
+			$sub_menu = $this->db->query($query_sub_menu)->result_array();
+			?>
 
-	<!-- Divider -->
-	<hr class="sidebar-divider">
+		<?php foreach ($sub_menu as $sm) : ?>
+			<li class="nav-item">
+				<a class="nav-link" href="<?= base_url($sm['url']); ?>">
+					<i class="<?= $sm['icon']; ?>"></i>
+					<span><?= $sm['title'] ?></span></a>
+			</li>
 
-	<!-- Heading -->
-	<div class="sidebar-heading">
-		User
-	</div>
+		<?php endforeach; ?>
+		<!-- Divider -->
+		<hr class="sidebar-divider">
+	<?php endforeach; ?>
 
-	<li class="nav-item">
-		<a class="nav-link" href="charts.html">
-			<i class="fas fa-fw fa-user"></i>
-			<span>My Account</span></a>
-	</li>
 
-	<hr class="sidebar-divider">
 
 	<li class="nav-item">
 		<a class="nav-link" href="<?= base_url('auth/logout'); ?>">

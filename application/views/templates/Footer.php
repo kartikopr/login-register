@@ -1,13 +1,12 @@
-
-	<!-- Footer -->
-	<footer class="sticky-footer bg-white">
-		<div class="container my-auto">
-			<div class="copyright text-center my-auto">
-				<span>Copyright &copy; Kartiko Pramudito <?= date('Y'); ?></span>
-			</div>
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+	<div class="container my-auto">
+		<div class="copyright text-center my-auto">
+			<span>Copyright &copy; Kartiko Pramudito <?= date('Y'); ?></span>
 		</div>
-	</footer>
-	<!-- End of Footer -->
+	</div>
+</footer>
+<!-- End of Footer -->
 
 </div>
 <!-- End of Content Wrapper -->
@@ -48,6 +47,29 @@
 
 <!-- Custom scripts for all pages-->
 <script src="<?= base_url('assets/') ?>js/sb-admin-2.min.js"></script>
+
+<script>
+	$('.form-check-input').on('click', function() {
+
+		// console.log('test');
+		const menuId = $(this).data('menu');
+		const roleId = $(this).data('role');
+
+		$.ajax({
+			url: "<?= base_url('admin/changeaccess'); ?>",
+			type: 'POST',
+			data: {
+				"<?php echo $this->security->get_csrf_token_name(); ?>": "<?php echo $this->security->get_csrf_hash(); ?>",
+				menuId: menuId,
+				roleId: roleId
+			},
+			success: function() {
+				document.location.href = "<?= base_url('admin/roleaccess/'); ?>" + roleId;
+			}
+
+		});
+	});
+</script>
 
 </body>
 
